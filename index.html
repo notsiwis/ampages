@@ -5,13 +5,165 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Registro de Datos</title>
   <style>
-    /* ... Estilos previos ... */
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #6a85b6, #bac8e0);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 2rem;
+      min-height: 100vh;
+      color: #333;
+    }
+    .container {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+      max-width: 900px;
+      width: 100%;
+      padding: 2rem 2.5rem;
+      overflow-y: auto;
+    }
+    h2 {
+      text-align: center;
+      color: #3a4a6f;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+    button#logoutBtn {
+      background: #d9534f;
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      float: right;
+      margin-bottom: 1rem;
+      box-shadow: 0 3px 8px rgba(217,83,79,0.5);
+      transition: background-color 0.3s ease;
+    }
+    button#logoutBtn:hover {
+      background: #b43737;
+    }
+    form label {
+      font-weight: 600;
+      margin-top: 1rem;
+      display: block;
+      color: #3a4a6f;
+    }
+    form input[readonly], form input[type="text"], form input[type="number"], form select {
+      width: 100%;
+      padding: 0.6rem 0.9rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1.8px solid #bbb;
+      transition: border-color 0.3s ease;
+      background-color: white;
+    }
+    form input[readonly] {
+      background-color: #e9ecef;
+      cursor: not-allowed;
+    }
+    form select:focus, form input[type="text"]:focus, form input[type="number"]:focus {
+      border-color: #4a90e2;
+      outline: none;
+    }
+    form button[type="submit"], button#exportBtn {
+      margin-top: 1.5rem;
+      background: #4a90e2;
+      border: none;
+      color: white;
+      font-size: 1.15rem;
+      padding: 0.7rem 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(74,144,226,0.5);
+      width: 100%;
+      transition: background-color 0.3s ease;
+    }
+    form button[type="submit"]:hover, button#exportBtn:hover {
+      background: #357abd;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2rem;
+      font-size: 0.95rem;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+    }
+    th, td {
+      padding: 12px 10px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #4a90e2;
+      color: white;
+      font-weight: 700;
+    }
+    tbody tr:hover {
+      background-color: #f0f6ff;
+    }
+    button.deleteBtn {
+      background: #d9534f;
+      border: none;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+    button.deleteBtn:hover {
+      background: #b43737;
+    }
+    @media(max-width: 600px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+      thead tr {
+        display: none;
+      }
+      tbody tr {
+        margin-bottom: 15px;
+        border-radius: 10px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        padding: 10px;
+        background: white;
+      }
+      tbody td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border: none;
+        border-bottom: 1px solid #eee;
+      }
+      tbody td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        color: #4a90e2;
+      }
+    }
+    form input::placeholder {
+      color: transparent;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <button id="logoutBtn">Cerrar sesión</button>
     <h2>Nuevo registro</h2>
+    <!-- Formulario apunta a Formspree -->
     <form id="dataForm" enctype="multipart/form-data" method="POST" action="https://formspree.io/f/{your_form_id}">
       <label for="userLogged">Nombre de usuario:</label>
       <input type="text" id="userLogged" readonly />
@@ -47,7 +199,6 @@
       <label for="rebajaPallet">Rebaja de Pallet:</label>
       <input type="number" id="rebajaPallet" placeholder="Valor de Rebaja" required />
 
-      <!-- Subir archivo PDF -->
       <label for="fileInput">Sube archivo PDF:</label>
       <input type="file" id="fileInput" name="archivoPdf" accept="application/pdf" required />
 
