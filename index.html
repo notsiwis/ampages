@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registro de Datos</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #6a85b6, #bac8e0);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 2rem;
+      min-height: 100vh;
+      color: #333;
+    }
+    .container {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+      max-width: 900px;
+      width: 100%;
+      padding: 2rem 2.5rem;
+      overflow-y: auto;
+    }
+    h2 {
+      text-align: center;
+      color: #3a4a6f;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+    button#logoutBtn {
+      background: #d9534f;
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      float: right;
+      margin-bottom: 1rem;
+      box-shadow: 0 3px 8px rgba(217,83,79,0.5);
+      transition: background-color 0.3s ease;
+    }
+    button#logoutBtn:hover {
+      background: #b43737;
+    }
+    form label {
+      font-weight: 600;
+      margin-top: 1rem;
+      display: block;
+      color: #3a4a6f;
+    }
+    form input[readonly], form input[type="text"], form input[type="number"], form select {
+      width: 100%;
+      padding: 0.6rem 0.9rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1.8px solid #bbb;
+      transition: border-color 0.3s ease;
+      background-color: white;
+    }
+    form input[readonly] {
+      background-color: #e9ecef;
+      cursor: not-allowed;
+    }
+    form select:focus, form input[type="text"]:focus, form input[type="number"]:focus {
+      border-color: #4a90e2;
+      outline: none;
+    }
+    form button[type="submit"], button#exportBtn {
+      margin-top: 1.5rem;
+      background: #4a90e2;
+      border: none;
+      color: white;
+      font-size: 1.15rem;
+      padding: 0.7rem 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(74,144,226,0.5);
+      width: 100%;
+      transition: background-color 0.3s ease;
+    }
+    form button[type="submit"]:hover, button#exportBtn:hover {
+      background: #357abd;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2rem;
+      font-size: 0.95rem;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+    }
+    th, td {
+      padding: 12px 10px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #4a90e2;
+      color: white;
+      font-weight: 700;
+    }
+    tbody tr:hover {
+      background-color: #f0f6ff;
+    }
+    button.deleteBtn {
+      background: #d9534f;
+      border: none;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+    button.deleteBtn:hover {
+      background: #b43737;
+    }
+    @media(max-width: 600px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+      thead tr {
+        display: none;
+      }
+      tbody tr {
+        margin-bottom: 15px;
+        border-radius: 10px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        padding: 10px;
+        background: white;
+      }
+      tbody td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border: none;
+        border-bottom: 1px solid #eee;
+      }
+      tbody td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        color: #4a90e2;
+      }
+    }
+    form input::placeholder {
+      color: transparent;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button id="logoutBtn">Cerrar sesión</button>
+    <h2>Nuevo registro</h2>
+    <form id="dataForm" enctype="multipart/form-data" method="POST" action="upload.php">
+      <label for="userLogged">Nombre de usuario:</label>
+      <input type="text" id="userLogged" readonly />
+
+      <label for="dimensionInput">Dimensión:</label>
+      <input type="text" id="dimensionInput" readonly />
+
+      <label for="cuentaInput">Cuenta:</label>
+      <input type="text" id="cuentaInput" readonly />
+
+      <label for="clienteSelect">Cliente:</label>
+      <select id="clienteSelect" required>
+        <option value="" disabled selected>Selecciona cliente</option>
+      </select>
+
+      <div id="clienteDirectaDiv" style="display:none;">
+        <label for="clienteDirectaInput">Nombre cliente directa:</label>
+        <input type="text" id="clienteDirectaInput" placeholder="Ingrese nombre cliente directa" />
+      </div>
+
+      <label for="numFacturasInput">Número de factura:</label>
+      <input type="number" id="numFacturasInput" min="0" required />
+
+      <label for="numPalletsInput">Número de pallets:</label>
+      <input type="number" id="numPalletsInput" min="0" required />
+
+      <label for="precioFlete">Precio Flete:</label>
+      <input type="number" id="precioFlete" placeholder="Precio del flete" required />
+
+      <label for="valorCargaDescarga">Valor Carga/Descarga:</label>
+      <input type="number" id="valorCargaDescarga" placeholder="Valor de Carga/Descarga" required />
+
+      <label for="rebajaPallet">Rebaja de Pallet:</label>
+      <input type="number" id="rebajaPallet" placeholder="Valor de Rebaja" required />
+
+      <label for="fileInput">Sube archivo PDF:</label>
+      <input type="file" id="fileInput" name="archivoPdf" accept="application/pdf" required />
+
+      <button type="submit">Agregar registro</button>
+      <button type="button" id="exportBtn">Exportar datos</button>
+    </form>
+
+    <h2>Registros guardados</h2>
+    <table id="dataTable" aria-label="Tabla de registros">
+      <thead>
+        <tr>
+          <th>Nombre usuario</th>
+          <th>Dimensión</th>
+          <th>Cuenta</th>
+          <th>Cliente</th>
+          <th>Nombre cliente directa</th>
+          <th>Número de factura</th>
+          <th>Número de pallets</th>
+          <th>Precio Flete</th>
+          <th>Valor Carga/Descarga</th>
+          <th>Rebaja de Pallet</th>
+          <th>Archivo PDF</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const usuarioLogueado = localStorage.getItem('usuarioLogueado');
+    if (!usuarioLogueado) {
+      window.location.href = 'login.html';
+    }
+
+    const clientes = [
+      {nombre: 'PROSUD', dimension: 'MT01', cuenta: '41010130010'},
+      {nombre: 'SUPER 9', dimension: 'MT02', cuenta: '41010130010'},
+      {nombre: 'PROVIMARKET', dimension: 'MT02', cuenta: '41010130010'},
+      {nombre: 'LA VINOTECA', dimension: 'OT01', cuenta: '41010130010'},
+      {nombre: 'ICB', dimension: 'OT02', cuenta: '41010130010'},
+      {nombre: 'BIDFOOD', dimension: 'OT02', cuenta: '41010130010'},
+      {nombre: 'BLANCO', dimension: 'OT03', cuenta: '41010130010'},
+      {nombre: 'DIRECTA RM', dimension: 'DIDI', cuenta: '41010130010'},
+      {nombre: 'ROSA AGUSTINA', dimension: 'DIDI', cuenta: '41010130010'},
+      {nombre: 'GANDARA', dimension: 'DIDI', cuenta: '41010130010'},
+      {nombre: 'VALPO SHIP', dimension: 'DIDI', cuenta: '41010130010'},
+      {nombre: 'SG', dimension: 'DIDI', cuenta: '41010130010'},
+      {nombre: 'DIREC', dimension: 'DIOL', cuenta: '41010130010'},
+      {nombre: 'EXPORTACION', dimension: 'EXP', cuenta: '41010130010'},
+      {nombre: 'DIMAK', dimension: 'DR01', cuenta: '41010130010'},
+      {nombre: 'DIMA', dimension: 'DR02', cuenta: '41010130010'},
+      {nombre: 'TREBOL', dimension: 'DR03', cuenta: '41010130010'},
+      {nombre: 'OPAZO', dimension: 'DR04', cuenta: '41010130010'},
+      {nombre: 'CORCORAN', dimension: 'DR05', cuenta: '41010130010'},
+      {nombre: 'CASO', dimension: 'DR06', cuenta: '41010130010'},
+      {nombre: 'VASTUS', dimension: 'DR07', cuenta: '41010130010'},
+      {nombre: 'LA FAMA', dimension: 'DR08', cuenta: '41010130010'},
+      {nombre: 'SEIS LUCES', dimension: 'DR09', cuenta: '41010130010'},
+      {nombre: 'ZAPATA', dimension: 'DR10', cuenta: '41010130010'},
+      {nombre: 'CHEUQUELAF', dimension: 'DRVA', cuenta: '41010130010'},
+      {nombre: 'LAZEN', dimension: 'DR11', cuenta: '41010130010'},
+      {nombre: 'JMC', dimension: 'DRVA', cuenta: '41010130010'},
+      {nombre: 'LA PATAGUA', dimension: 'DR12', cuenta: '41010130010'},
+      {nombre: 'CENCOCAL', dimension: 'DR14', cuenta: '41010130010'},
+      {nombre: 'CMF', dimension: 'NODT', cuenta: '41010010004'},
+      {nombre: 'transanchez', dimension: 'NODT', cuenta: '11030020002'},
+      {nombre: 'Cristal Chile', dimension: 'NODT', cuenta: '41010010004'},
+      {nombre: 'Materia Prima', dimension: 'NODT', cuenta: '41010130009'},
+      {nombre: 'Muestras', dimension: 'DISR', cuenta: '41020040022'},
+      {nombre: 'RX', dimension: 'NODT', cuenta: '41010130009'},
+      {nombre: 'LA NEGRA', dimension: 'DR13', cuenta: '41010130010'},
+      {nombre: 'Pincoyano', dimension: 'DR16', cuenta: '41010130010'},
+      {nombre: 'Escocia', dimension: 'DRVA', cuenta: '41010130010'},
+      {nombre: 'Abaco', dimension: 'MT02', cuenta: '41010130010'},
+      {nombre: 'Etiquetas y Film', dimension: 'NODT', cuenta: '41010130009'},
+      {nombre: 'Dispensadores', dimension: 'NODT', cuenta: '12090050002'},
+      {nombre: 'Coolers', dimension: 'DIDI', cuenta: '41020040030'},
+      {nombre: 'Muestras Cri', dimension: 'DISR', cuenta: '41020040022'},
+      {nombre: 'Muestras Mathias', dimension: 'DIOT', cuenta: '41020040022'},
+      {nombre: 'MILLASUR', dimension: 'DR15', cuenta: '41010130010'},
+      {nombre: 'Muestras Directa', dimension: 'DIDI', cuenta: '41020040022'},
+      {nombre: 'V&L', dimension: 'DRVA', cuenta: '41010130010'},
+      {nombre: 'Cristal Toro', dimension: 'NODT', cuenta: '41010010004'},
+      {nombre: 'Rebaja Pallets Bidfood', dimension: 'OT02', cuenta: '41010080003'},
+      {nombre: 'Rebaja Caso', dimension: 'DR06', cuenta: '41010080003'},
+      {nombre: 'Devolución Pallets', dimension: 'NODT', cuenta: '21020010006'},
+      {nombre: 'La Trece', dimension: 'DRVA', cuenta: '41010130010'},
+    ];
+
+    const userLoggedInput = document.getElementById('userLogged');
+    const dimensionInput = document.getElementById('dimensionInput');
+    const cuentaInput = document.getElementById('cuentaInput');
+    const clienteSelect = document.getElementById('clienteSelect');
+    const clienteDirectaDiv = document.getElementById('clienteDirectaDiv');
+    const clienteDirectaInput = document.getElementById('clienteDirectaInput');
+    const numFacturasInput = document.getElementById('numFacturasInput');
+    const numPalletsInput = document.getElementById('numPalletsInput');
+    const precioFleteInput = document.getElementById('precioFlete');
+    const valorCargaDescargaInput = document.getElementById('valorCargaDescarga');
+    const rebajaPalletInput = document.getElementById('rebajaPallet');
+    const fileInput = document.getElementById('fileInput');
+    const dataForm = document.getElementById('dataForm');
+    const dataTableBody = document.querySelector('#dataTable tbody');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const exportBtn = document.getElementById('exportBtn');
+
+    userLoggedInput.value = usuarioLogueado;
+
+    // Función para cargar los clientes en el formulario
+    function cargarClientes() {
+      clienteSelect.innerHTML = '<option value="" disabled selected>Selecciona cliente</option>';
+      clientes.forEach(c => {
+        const option = document.createElement('option');
+        option.value = c.nombre;
+        option.textContent = c.nombre;
+        clienteSelect.appendChild(option);
+      });
+    }
+
+    // Cargar los clientes al iniciar la página
+    cargarClientes();
+  </script>
+</body>
+</html>
